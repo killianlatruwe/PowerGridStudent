@@ -83,9 +83,15 @@ Pour configurer un environnement de développement avec WSL, il vous faut instal
 
 ### Installation de WSL
 
-> Note : WSL est déjà installé sur les ordinateurs de l'université. Ces instructions s'adressent donc aux étudiants qui réalisent le TP sur un ordinateur personnel.
+Afin de vérifier que WSL est bien installé sur votre machine, ouvrez un terminal Windows PowerShell (n'utilisez pas l'invite de commande par défaut de Windows, qui risque de vous empêcher de copier des commandes), et exécutez la commande suivante :
 
-Afin d'installer WSL sur votre ordinateur, commencez par ouvrir un terminal Windows PowerShell. Exécutez-y la commande suivante :
+```bash
+wsl --list --online
+```
+
+Si la commande retourne un message d'erreur, il vous faut installer WSL sur votre ordinateur. Sinon, vous pouvez passer à la section suivante. 
+
+Afin d'installer WSL sur votre ordinateur, exécutez la commande suivante dans votre terminal Windows PowerShell :
 
 ```bash
 wsl --install
@@ -97,7 +103,7 @@ Cette commande installe les composants de WSL, et vous permettra de réaliser le
 
 ### Configuration d'une VM WSL2
 
-Nous allons réaliser les manipulations de ce TP en utilisant le WSL2. Il s'agit d'une machine virtuelle linux intégrée au système Windows. Ouvrez une invite de commande Windows (PowerShell), puis tapez la commande suivante pour lancer la machine virtuelle :
+Nous allons réaliser les manipulations de ce TP en utilisant le WSL2. Il s'agit d'une machine virtuelle linux intégrée au système Windows. Ouvrez une invite de commande Windows (PowerShell), puis tapez la commande suivante pour lancer une nouvelle machine virtuelle :
 
 ```bash
 wsl --install Debian
@@ -139,11 +145,11 @@ Enfin, il faut signaler à GitHub que cette clé vous identifie comme un utilisa
 
 ### Clonage du projet et configuration des identifiants
 
-Vous êtes maintenant en mesure de développer dans l'environnement de la machine virtuelle, et de pousser vos modifications vers le dépôt stocké sur GitHub. Téléchargez tout d'abord le dépôt dans votre environnement de développement. La commande `git clone` permet de copier localement un dépôt désigné par son URL. Exécutez les commandes :
+Vous êtes maintenant en mesure de développer dans l'environnement de la machine virtuelle, et de pousser vos modifications vers le dépôt stocké sur GitHub. Téléchargez tout d'abord le dépôt dans votre environnement de développement. La commande `git clone` permet de copier localement un dépôt désigné par son URL. Exécutez les commandes suivantes, en remplaçant par le nom d'utilisateur GitHub du détenteur du fork :
 
 ```bash
-git clone git@github.com:NomDUtilisateur/PowerGridStudent.git
-cd PowerGrid
+git clone git@github.com:[NOM UTILISATEUR]/PowerGridStudent.git
+cd PowerGridStudent
 ```
 
 Vous avez maintenant cloné le dépôt de code PowerGrid dans votre machine virtuelle, et avez déplacé votre terminal à l'intérieur du répertoire ainsi créé. Il vous est maintenant possible d'ouvrir et de modifier les différents fichiers du projet. Cependant, vous n'avez pas encore défini d'identifiants au sein de git vous permettant de créer et pousser de nouveaux commits. Pour ce faire, exécutez les commandes suivantes, en remplaçant avec votre identité :
@@ -183,6 +189,20 @@ Vérifiez que vous êtes en mesure d'exécuter le projet (script `PowerGrid.py`)
 
 ### Export de votre machine virtuelle pour réutilisation ultérieure
 
+#### Quitter ou relancer une machine virtuelle
+
+Depuis un terminal d'une machine virtuelle, vous pouvez quitter celle-ci en tapant la commande `exit`. Vous quitterez également la machine virtuelle si vous êtes emmené à fermer le terminal.
+
+Pour se reconnecter à une machine virtuelle, il faut connaître le nom de la ditribution de celle-ci (par exemple `Debian` dans le cas de la machine virtuelle décrite ci-dessous comme notre environnement de développement), ainsi que le nom d'utilisateur que vous aviez choisi pour cette machine virtuelle.
+
+Par exemple, pour me connecter à une machine virtuelle `Debian` avec l'utilisateur `louis`, j'exécuterai alors la commande :
+
+```bash
+wsl --distribution Debian --user louis
+```
+
+#### Export d'une machine virtuelle pour réutilisation ultérieure
+
 > Note : Cette section est principalement à destination des étudiants ayant choisi de développer en utilisant les machines de l'université, les autres étudiants peuvent ignorer ces instructions.
 
 Si vous souhaitez sauvegarder un état de votre machine virtuelle (par exemple, dans le cas des ordinateurs de l'université qui sont réinitialisés à chaque déconnexion), vous pouvez exporter la machine virtuelle vers un fichier au moyen d'une commande. Vous pourrez alors stocker ce fichier à un endroit sécurisé et demander à wsl de le charger lors d'une utilisation ultérieure.
@@ -219,7 +239,7 @@ Vous allez mettre en place un serveur d'automatisation des tests de votre projet
 
 ### Configuration d'un environnement WSL
 
-Commencez par ouvrir un terminal Windows (PowerShell), et tapez la commande suivante pour démarrer une machine virtuelle Linux :
+Commencez par ouvrir un terminal Windows (PowerShell), et tapez la commande suivante pour démarrer **une nouvelle machine virtuelle** Linux :
 
 ```bash
 wsl --install Ubuntu-22.04
@@ -244,7 +264,7 @@ sudo ufw allow 9090
 sudo systemctl enable jenkins
 sudo sed -i 's/Environment=\"JENKINS_PORT=8080\"/Environment=\"JENKINS_PORT=9090\"/g' /lib/systemd/system/jenkins.service
 sudo systemctl daemon-reload
-sudo systemctl start jenkins
+sudo systemctl restart jenkins
 sudo apt install -y git python3 python3-pip python3-venv
 ```
 
