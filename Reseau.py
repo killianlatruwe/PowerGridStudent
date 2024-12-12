@@ -52,7 +52,7 @@ class Reseau:
                                     l[i]=True    
         if i not in l:
             l[i]=False
-         return l
+        return l
     
     def valider_reseau(self) -> bool:
         if len(self.arcs)>=(len(self.noeuds)-1):
@@ -67,29 +67,31 @@ class Reseau:
             return False
 
     def valider_distribution(self, t: Terrain) -> bool:
-        
         l={}
         x=0
-            for i in Terrain.clients:
-                x=0
-                for j in self.noeuds:
-                    if i==self.noeuds[j]:
-                        x=1
-                        l=self.valider_noeud(j,l=l) 
-                if x==0:
-                    return False
-            for i in l:
-                if not(l[i]):
-                    return False
-                
-            return True
+        for i in t.get_clients():
+            x=0
+            for j in self.noeuds:
+                if i==self.noeuds[j]:
+                    x=1
+                    l=self.valider_noeud(j,l=l) 
+            if x==0:
+                return False
+        for i in l:
+            if not(l[i]):
+                return False
+            
+        return True
 
     def configurer(self, t: Terrain):
         self.noeud_entree, self.noeuds, self.arcs  = self.strat.configurer(t)
 
     def afficher(self) -> None:
-        # TODO
-        pass
+        for i in self.noeuds:
+            for j in self.noeuds:
+                if (i,j) in self.arcs:
+                    print(self.arcs((i,j)))
+        
 
     def afficher_avec_terrain(self, t: Terrain) -> None:
         for ligne, l in enumerate(t.cases):
