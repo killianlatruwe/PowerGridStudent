@@ -33,20 +33,65 @@ class Reseau:
     def set_strategie(self, strat: StrategieReseau):
         self.strat = strat
 
+    def noeud_proche(i,j):
+        return (noeuds[i][0]==noeuds[j][0]-1 and noeuds[i][1]==noeuds[j][1]) or (noeuds[i][0]==noeuds[j][0]+1 and noeuds[i][1]==noeuds[j][1]) or (noeuds[i][1]==noeuds[j][1]-1 and noeuds[j][0]==noeuds[i][0]) or (noeuds[i][1]==noeuds[j][1]+1 and noeuds[i][0]==noeuds[j][0])
+    
+    def valider_noeud(self,i,l={}):
+        if i in self.noeuds and (i not in l):
+            if i==self.noeud_entree:
+                l[i]=True
+            else :
+                for j in self.noeuds:
+                    if i!=j and noeud_proche(i,j):
+                        if (i,j) in self.arcs and (i not in l):
+                            if j in l and l[j]:
+                                l[i]=True
+                            else:
+                                l=self.valider_noeud(j,l=l)
+                                if l[j]:
+                                    l[i]=True    
+        if i not in l:
+            l[i]=False
+        return l
+    
     def valider_reseau(self) -> bool:
-        # TODO
-        return False
+        if len(self.arcs)>=(len(self.noeuds)-1):
+            l={}
+            for i in self.noeuds:
+               l=self.valider_noeud(i,l=l) 
+            for i in l:
+                if not(l[i]):
+                    return False
+            return True
+        else :
+            return False
 
     def valider_distribution(self, t: Terrain) -> bool:
-        # TODO
-        return False
+        l={}
+        x=0
+        for i in t.get_clients():
+            x=0
+            for j in self.noeuds:
+                if i==self.noeuds[j]:
+                    x=1
+                    l=self.valider_noeud(j,l=l) 
+            if x==0:
+                return False
+        for i in l:
+            if not(l[i]):
+                return False
+            
+        return True
 
     def configurer(self, t: Terrain):
         self.noeud_entree, self.noeuds, self.arcs  = self.strat.configurer(t)
 
     def afficher(self) -> None:
-        # TODO
-        pass
+        for i in self.noeuds:
+            for j in self.noeuds:
+                if (i,j) in self.arcs:
+                    print(self.arcs((i,j)))
+        
 
     def afficher_avec_terrain(self, t: Terrain) -> None:
         for ligne, l in enumerate(t.cases):
